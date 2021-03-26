@@ -24,7 +24,7 @@ export default {
         function handleForm() {
             emit('data-income', {
                 desc: state.desc,
-                value: state.value,
+                value: parseInt(state.value),
                 date: state.date
             });
 

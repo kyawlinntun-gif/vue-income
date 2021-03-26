@@ -2,12 +2,14 @@
     <div class="vue-income">
         <Header :totalIncome="state.totalIncome"></Header>
         <Form v-on:dataIncome="handleIncome"></Form>
+        <income-list :state="state.income"></income-list>
     </div>
 </template>
 
 <script>
 import Header from './components/Header';
 import Form from './components/Form';
+import IncomeList from './components/IncomeList.vue';
 import { reactive, computed } from 'vue';
 
 export default {
@@ -18,28 +20,40 @@ export default {
             income: [],
             totalIncome: computed(() => {
                 let temp = 0;
-                for(var i = 0; i < state.income.length; i++)
-                {
-                    temp += parseInt(state.income[i].value);
+                if(state.income.length > 0) {
+                    for(let i = 0; i < state.income.length; i++)
+                    {
+                        temp += state.income[i].value;
+                    }
                 }
                 return temp;
             })
         });
 
         function handleIncome(data) {
+            let d = data.date.split("-");
+            let newD = new Date(d[0], d[1], d[2]);
+
+            let fullDate = newD;
+            let day = fullDate.getDate();
+            let month = fullDate.getMonth();
+            let year = fullDate.getFullYear();
+
+            let formattedDate = day + '/' + month + '/' + year;
+
             state.income = [
                 ...state.income,
                 {
                     id: Date.now(),
                     desc: data.desc,
                     value: data.value,
-                    date: data.date
+                    date: formattedDate
                 }
             ]
         }
 
         return {
-            Header, state, Form, handleIncome
+            Header, state, Form, handleIncome, IncomeList
         }
     }
 }
